@@ -1,0 +1,9 @@
+﻿integer,Int64,string,float,bool,boolean
+1,1,one,1.0,TRUE,TRUE
+2,2,two,,TRUE,TRUE
+3,3,,3.0,TRUE,
+4,,four,4.0,TRUE,TRUE
+5,5,five,,FALSE,FALSE
+6,6,,5.0,FALSE,FALSE
+7,,seven,6.0,FALSE,
+8,8,eight,7.0,FALSE,FALSE
