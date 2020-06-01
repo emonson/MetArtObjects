@@ -11,10 +11,10 @@ import tarfile
 
 # input_dir = os.path.join('.','html')
 input_dir = os.path.join('/','Volumes','Data','ArtMarkets','MetArtObjectsPages')
-input_file = 'MetWeb_Dept11.tar.gz'
+input_file = 'MetWeb_Dept15.tar.gz'
 
 output_dir = os.path.join('/','Volumes','Data','ArtMarkets','MetArtObjectsPages')
-output_file = 'MetWeb_Dept11.tsv'
+output_file = 'MetWeb_Dept15.tsv'
 
 df_list = []
 
@@ -66,21 +66,28 @@ with tarfile.open(os.path.join(input_dir,input_file), "r:gz") as tar:
 
         # #### Date
         current_key = 'Date'
-        if soup.select_one('.artwork__date time'):
-            data[current_key] += soup.select_one('.artwork__date time').get_text().strip()
+        current_value = soup.select_one('.artwork__date time')
+        if current_value:
+            data[current_key] += current_value.get_text().strip()
 
         # #### Name (can be artist or designer...)
         # If there's a modifier it's in text with newline in between?
         current_key = 'Name'
-        data[current_key] += soup.select_one('.artwork__artist__name').get_text().strip()
+        current_value = soup.select_one('.artwork__artist__name')
+        if current_value:
+            data[current_key] += current_value.get_text().strip()
 
         # #### Artist region
         current_key = 'Artist_region'
-        data[current_key] += soup.select_one('.artwork__artist__region').get_text().strip()
+        current_value = soup.select_one('.artwork__artist__region')
+        if current_value:
+            data[current_key] += current_value.get_text().strip()
 
         # #### Description
         current_key = 'Description'
-        data[current_key] += soup.select_one('.artwork__intro__desc').get_text().strip()
+        current_value = soup.select_one('.artwork__intro__desc')
+        if current_value:
+            data[current_key] += current_value.get_text().strip()
 
         # #### Location
         current_key = 'Location'
