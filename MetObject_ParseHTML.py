@@ -9,18 +9,29 @@ import os
 import pandas as pd
 import tarfile
 
-page_dir = os.path.join('.','html')
-input_file = 'test_html.tar.gz'
-output_file = 'test_parse_tgz.tsv'
+# input_dir = os.path.join('.','html')
+input_dir = os.path.join('/','Volumes','Data','ArtMarkets','MetArtObjectsPages')
+input_file = 'MetWeb_Dept11.tar.gz'
+
+output_dir = os.path.join('/','Volumes','Data','ArtMarkets','MetArtObjectsPages')
+output_file = 'MetWeb_Dept11.tsv'
 
 df_list = []
 
-with tarfile.open(os.path.join(page_dir,input_file), "r:gz") as tar:
+# Since some of these files are really large, want a count of the number of files inside
+print('counting number of files...')
+with tarfile.open(os.path.join(input_dir,input_file), "r:gz") as tar:
+    count = sum(1 for member in tar if (member.isreg() and not member.name.startswith('.')))
+print('starting real loop...')
+
+current_file_number = 0
+with tarfile.open(os.path.join(input_dir,input_file), "r:gz") as tar:
     for tarinfo in tar:
         page = tarinfo.name
         if page.startswith('.'):
             continue
-        print('>>>',page)
+        current_file_number += 1
+        print('>>>',page,'({} / {})'.format(current_file_number,count))
         with tar.extractfile(page) as f:
             html = f.read()
         soup = bs4.BeautifulSoup(html,'lxml')
@@ -55,7 +66,8 @@ with tarfile.open(os.path.join(page_dir,input_file), "r:gz") as tar:
 
         # #### Date
         current_key = 'Date'
-        data[current_key] += soup.select_one('.artwork__date time').get_text().strip()
+        if soup.select_one('.artwork__date time'):
+            data[current_key] += soup.select_one('.artwork__date time').get_text().strip()
 
         # #### Name (can be artist or designer...)
         # If there's a modifier it's in text with newline in between?
@@ -146,7 +158,7 @@ with tarfile.open(os.path.join(page_dir,input_file), "r:gz") as tar:
         df_list.append(pd.DataFrame(data,index=[os.path.basename(page)]))
 
 df_all = pd.concat(df_list)
-df_all.to_csv(output_file, sep='\t', encoding='utf-8')
+df_all.to_csv(os.path.join(output_dir,output_file), sep='\t', encoding='utf-8')
 
 
 
