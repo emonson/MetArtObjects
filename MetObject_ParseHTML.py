@@ -11,10 +11,10 @@ import tarfile
 
 # input_dir = os.path.join('.','html')
 input_dir = os.path.join('/','Volumes','Data','ArtMarkets','MetArtObjectsPages')
-input_file = 'MetWeb_Dept15.tar.gz'
+input_file = 'MetWeb_Dept12.tar.gz'
 
 output_dir = os.path.join('/','Volumes','Data','ArtMarkets','MetArtObjectsPages')
-output_file = 'MetWeb_Dept15.tsv'
+output_file = 'MetWeb_Dept12.tsv'
 
 df_list = []
 
@@ -62,7 +62,9 @@ with tarfile.open(os.path.join(input_dir,input_file), "r:gz") as tar:
 
         # #### Title
         current_key = 'Title'
-        data[current_key] += soup.select_one('.artwork__title--text').get_text().strip()
+        current_value = soup.select_one('.artwork__title--text')
+        if current_value:
+            data[current_key] += current_value.get_text().strip()
 
         # #### Date
         current_key = 'Date'
@@ -95,7 +97,7 @@ with tarfile.open(os.path.join(input_dir,input_file), "r:gz") as tar:
             data[current_key] += soup.select_one('.artwork__location--message').get_text().strip()
             data[current_key] += "|"
             data[current_key] += soup.select_one('.artwork__location--gallery').get_text().strip()
-        else:
+        elif soup.select_one('.artwork__location'):
             data[current_key] += soup.select_one('.artwork__location').get_text().strip()
 
         # #### Object details
