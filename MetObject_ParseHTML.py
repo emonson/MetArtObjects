@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[85]:
-
-
 import bs4
 from collections import defaultdict
 from pprint import pprint
@@ -15,17 +12,6 @@ import tarfile
 page_dir = os.path.join('.','html')
 input_file = 'test_html.tar.gz'
 output_file = 'test_parse_tgz.tsv'
-
-# tar = tarfile.open("sample.tar.gz", "r:gz")
-# for tarinfo in tar:
-#     print(tarinfo.name, "is", tarinfo.size, "bytes in size and is", end="")
-#     if tarinfo.isreg():
-#         print("a regular file.")
-#     elif tarinfo.isdir():
-#         print("a directory.")
-#     else:
-#         print("something else.")
-# tar.close()
 
 df_list = []
 
@@ -102,9 +88,11 @@ with tarfile.open(os.path.join(page_dir,input_file), "r:gz") as tar:
             if ss.select_one('.artwork__tombstone--value'):
                 value = ss.select_one('.artwork__tombstone--value').get_text().strip().replace('\n','|')
             current_key = label
-            if data[current_key]: data[current_key] += "|"
-            data[current_key] += value
-            # print(current_key, ':', data[current_key])
+            # There is often repetition between this section and earlier page displays
+            if not (value == data[current_key]):
+                if data[current_key]: data[current_key] += "|"
+                data[current_key] += value
+                # print(current_key, ':', data[current_key])
 
         # #### Component accordions
         current_key = 'none'
@@ -151,7 +139,7 @@ with tarfile.open(os.path.join(page_dir,input_file), "r:gz") as tar:
 
         # Remove all newline characters before creating DataFrame
         for k,v in data.items():
-            data[k] = v.replace('\n',' ')
+            data[k] = v.replace('\x0D\x0A', ' ').replace('\x0A',' ').replace('\x0D',' ')
 
         # pprint(data)
 
