@@ -11,10 +11,10 @@ import tarfile
 
 # input_dir = os.path.join('.','html')
 input_dir = os.path.join('/','Volumes','Data','ArtMarkets','MetArtObjectsPages')
-input_file = 'MetWeb_Dept12.tar.gz'
+input_file = 'MetWeb_Dept17.tar.gz'
 
 output_dir = os.path.join('/','Volumes','Data','ArtMarkets','MetArtObjectsPages')
-output_file = 'MetWeb_Dept12.tsv'
+output_file = 'MetWeb_Dept17.tsv'
 
 df_list = []
 
